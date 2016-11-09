@@ -1,28 +1,46 @@
-Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/alpha_shape.csv', function(err, rows){
+var TOTAL_ELEMENT_HEIGHT = 1000;
+var TOTAL_ELEMENT_WIDTH = 1500;
+var TOTAL_TITLE = 'AI vs AMMP vs GeoPhysics';
+var NAME_LABEL_SIZE = 12;
+var MARKER_DOT_SIZE = 3;
+
+
+Plotly.d3.csv('http://oblong-relentless.herokuapp.com/', function(err, rows){
     function unpack(rows, key) {
         return rows.map(function(row) { return row[key]; });
     }
 
     var data = [{
-        x: unpack(rows, 'x'),
-        y: unpack(rows, 'y'),
-        z: unpack(rows, 'z'),
-        mode: 'markers',
-        type: 'scatter3d',
-        marker: {
-            color: 'rgb(255, 0, 0)',
-            size: 1
-        }},{
-        alphahull: 7,
-        opacity: 0.1,
-        type: 'mesh3d',
-        x: unpack(rows, 'x'),
-        y: unpack(rows, 'y'),
-        z: unpack(rows, 'z')
-    }];
+            x: unpack(rows, 'x'),
+            y: unpack(rows, 'y'),
+            z: unpack(rows, 'z'),
+            text: unpack(rows, 'surname'),
+            mode: 'markers+text',
+            type: 'scatter3d',
+            marker: {
+                color: 'rgb(255, 0, 0)',
+                size: MARKER_DOT_SIZE
+            },
+            textfont: {
+                size: NAME_LABEL_SIZE
+            },
+            hoverinfo: 'text'
+        },
+        {
+            alphahull: 7,
+            opacity: 0.1,
+            type: 'mesh3d',
+            x: unpack(rows, 'x'),
+            y: unpack(rows, 'y'),
+            z: unpack(rows, 'z'),
+            hoverinfo: 'x+y+z'
+        }
+    ];
+
     var layout = {
         autosize: true,
-        height: 1000,
+        height: TOTAL_ELEMENT_HEIGHT,
+        width: TOTAL_ELEMENT_WIDTH,
         scene: {
             aspectratio: {
                 x: 1,
@@ -59,8 +77,7 @@ Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/alpha_sh
                 zeroline: false
             }
         },
-        title: 'AI vs AMMP vs GeoPhysics',
-        width: 1600
+        title: TOTAL_TITLE
     };
 
     Plotly.newPlot('myDiv', data, layout);
