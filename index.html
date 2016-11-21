@@ -2,13 +2,75 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Graph Demonstration</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="js/graphidx.js"></script>
+    <script src="node_modules/chart.js/dist/Chart.min.js"></script>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
 </head>
 <body>
+    <canvas id="myChart" width="200" height="95vh"></canvas>
+    <script>
 
-    <div id="myDiv" style="width:100%;height:100%"></div>
+        $(document).ready(function(){
+            getDataSet();
+        });
+
+        var data;
+
+        function getDataSet(){
+            $.get('http://oblong-relentless.herokuapp.com/', function(response){
+                var rcvd = $.parseJSON(response);
+                data = rcvd;
+
+
+
+                var options = {
+                    onClick: clickHandler,
+                    layout:{
+                        padding:20
+                    },
+                    tooltips:{
+                        titleFontSize:24,
+                        bodyFontSize:32,
+                        callbacks:{
+                            label:function(e, d){
+                                //console.log(e.datasetIndex);
+                                //console.log(d.datasets[e.datasetIndex]);
+                                return  d.datasets[e.datasetIndex].label;
+                            }
+                        }
+                    },
+                    legend:{
+                        display:false
+                    },
+                    scales: {
+                        xAxes: [{
+                            display:false,
+                            position: 'bottom'
+                            /*ticks: {
+                             min: 1,
+                             max: 100
+                             }*/
+                        }],
+                        yAxes: [{
+                            display:false
+                        }]
+                    }
+                };
+
+                var ctx = document.getElementById("myChart");
+
+                var myBubbleChart = new Chart(ctx,{
+                    type: 'bubble',
+                    data: data,
+                    options: options
+                });
+
+                function clickHandler(e, da){
+                    console.log(da[0]._datasetIndex);
+                }
+            });
+        }
+
+    </script>
 
 
 </body>
